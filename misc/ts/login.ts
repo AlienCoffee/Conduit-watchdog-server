@@ -1,6 +1,6 @@
-import { Request, PostRequest } from "./network";
+import { Request, PostRequest, GetRequest } from "./network";
 import { dataElement } from "./common";
-import { addShortErrorPopupTile } from "./popup";
+import { addShortErrorPopupTile, addErrorPopupTile } from "./popup";
 
 export function attemptLogin () {
     var login    = dataElement ("login").value;
@@ -19,5 +19,9 @@ export function attemptLogin () {
 }
 
 export function onResponse (response : string) {
-    console.log (response);
+    var data = <{"verdict" : boolean, "message" : string}> JSON.parse (response);
+    if (!data.verdict) { 
+        addErrorPopupTile ("Authentification failed", 
+                           data.message, 10);
+    } else { location.reload (); }
 }

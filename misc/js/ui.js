@@ -3,7 +3,7 @@ var __page_context = {};
 
 var loadContext = function (filenames) {
     for (var i = 0; i < filenames.length; i++) {
-        filenames [i] = "misc/js/" + filenames [i];
+        filenames [i] = "misc/ts/" + filenames [i];
     }
 
     requirejs (filenames, function () { 

@@ -1,8 +1,9 @@
 <?php
 
     function find_request_handler ($controller) {
+        global $_request_arguments;
         global $_request_method;
-        global $_request_parsed;
+        global $_request_data;
         global $_user;
 
         $class_ref = new ReflectionClass ($controller);
@@ -30,11 +31,15 @@
             }
 
             $request_context ["user"] = $_user;
-
+            $request_context ["data"] = $_request_data;
+            $request_context ["arguments"] = $_request_arguments;
+            
             $return = $method_ref->invoke ($controller, $request_context);
 
             if ($return instanceof PageHolder) {
                 $return->load_page ();
+            } else if ($return instanceof ObjectHolder) {
+                echo $return->toJson ();
             } else if ($return) {
                 echo $return;
             }
@@ -87,6 +92,27 @@
         public function load_page () {
             $file = "src/ru/shemplo/front/".$this->filename.".php";
             require_once ($file);
+        }
+
+    }
+
+    interface ObjectHolder {
+
+        public function toJson ();
+
+    }
+
+    class AuthVerdict implements ObjectHolder {
+
+        private $verdict, $message;
+
+        public function __construct ($success, $message) {
+            $this->verdict = $success; $this->message = $message;
+        }
+
+        public function toJson () {
+            return json_encode (Array ("verdict" => $this->verdict, 
+                                       "message" => $this->message));
         }
 
     }

@@ -8,7 +8,7 @@ class MainController {
         $method     = "GET",
         $authorized = false
     ) {
-        if (!$context ["authorized"]) {
+        if (!$context ["user"]["authorized"]) {
             return new PageHolder ("login", $context);
         }
 
@@ -18,10 +18,18 @@ class MainController {
     public function handleLoginAttempt (
         $context,
         $paths      = ["/watchdog/user/login"],
-        $method     = "GET",
+        $method     = "POST",
         $authorized = false
     ) {
-        // do something here
+        $data = json_decode ($context ["data"], true);
+
+        $token = try_authorize ($data ["login"], $data ["password"]);
+        if ($token) {
+            setcookie ("session", $token, time () + 60 * 60 * 1, "/");
+            return new AuthVerdict (true, "");
+        }
+
+        return new AuthVerdict (false, "Wrong login or password");
     }
 
 }

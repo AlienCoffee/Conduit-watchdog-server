@@ -19,4 +19,13 @@
         return hash_hmac ("sha256", $credits, SERVER_ACCOUNT_SECRET);
     }
 
+    function try_authorize ($login, $password) {
+        if (str_compare ($password, SERVER_ACCOUNT_PASSWORD)
+                && str_compare ($login, SERVER_ACCOUNT_LOGIN)) {
+            return encrypt ($login, $password);
+        }
+
+        return false;
+    } 
+
 ?>

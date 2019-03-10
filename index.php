@@ -8,6 +8,7 @@
     $_request_time   = $_SERVER ['REQUEST_TIME'];
 
     $_request_arguments = Array ();
+    $_request_data = file_get_contents ('php://input');
     $_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://", 
                $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
     
@@ -27,7 +28,7 @@
     
     $_user = Array ("authorized" => false);
     $_client_access_token = "guest";
-    
+
     if (isset ($_COOKIE ["session"])) {
         $token = $_COOKIE ["session"];
         $keys = explode (":", $token);

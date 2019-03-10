@@ -8,3 +8,4 @@ package.json
 configs/
 
 *.js.map
+/ts/*.js
