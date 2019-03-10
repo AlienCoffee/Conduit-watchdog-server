@@ -1,0 +1,92 @@
+
+@import url(fonts.css);
+@import url(popup.css);
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    height : 100%;
+    margin : 0;
+
+    justify-content: space-around;
+    align-items    : center
+}
+
+.login-form {
+    text-align: center;
+    opacity   : 0.95;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    transition: opacity 0.3s linear;
+}
+
+.login-form:hover {
+    opacity: 1;
+}
+
+.login-form-line {
+    display: flex;
+    margin : 1.75em 0;
+
+    justify-content: space-around;
+    align-items    : flex-start;
+}
+
+.login-form-line span {
+    vertical-align: middle;
+}
+
+.login-form-line input {
+    min-width: 200px;
+    /*margin-left: 1.25em;*/
+}
+
+.login-form-line input[type=text],
+.login-form-line input[type=password] {
+    padding: 4px;
+
+    border       : none;
+    outline      : none;
+    border-bottom: 1px solid black;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size  : 12pt;
+}
+
+.login-form-line button {
+    padding: 0.5em 0.75em;
+    outline: none;
+    border : none;
+    cursor : pointer;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-form-placeholder {
+    position: relative;
+}
+
+.login-form-placeholder > .placeholder {
+    position: absolute;
+    display : block;
+    bottom  : 4px;
+    z-index : 1;
+
+    transition: transform 0.3s ease-out;
+}
+
+.login-form-placeholder > input:focus + .placeholder,
+.login-form-placeholder > input:not(:placeholder-shown) + .placeholder {
+    transform: translateX(calc(-100% - 10px));
+    font-size: 90%;
+    color    : gray;
+}
+
+::-webkit-input-placeholder {
+	opacity   : 0;
+	transition: inherit;
+}

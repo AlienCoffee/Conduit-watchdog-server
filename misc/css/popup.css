@@ -1,0 +1,40 @@
+
+.popup-layer {
+    position: absolute;
+    right   : 0;
+    top     : 0;
+    bottom  : 0;
+    width   : 25%;
+    z-index : 100;
+
+    overflow-y: auto;
+}
+
+.popup-tile {
+    margin   : 1.5em auto;
+    padding  : 0 0.5em;
+    width    : 80%;
+    max-width: 300px;
+
+    border       : 1px solid black;
+    border-radius: 4px;
+    box-shadow   : 0 0 5px 2px black;
+    font-family  : 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.popup-title {
+    margin: 0.25em 0.25em;
+}
+
+.popup-message {
+    margin: 0.25em 0.25em 0.5em 0.25em;
+    
+    font-size: 10pt;
+}
+
+.popup-error {
+    box-shadow: 0 0 5px 2px rgba(225,0,0,0.25);
+    background: rgba(225,0,0,0.15);
+    border    : 1px solid rgba(225,0,0,0.25);
+    color     : rgb(100,0,0);
+}
