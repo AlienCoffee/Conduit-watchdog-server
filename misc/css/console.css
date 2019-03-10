@@ -1,0 +1,66 @@
+@import url(fonts.css);
+@import url(popup.css);
+
+body {
+    margin: 0;
+
+    font-family    : 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.console-top-menu {
+    display: flex;
+    margin : 2.5em;
+
+    justify-content: flex-start;
+    align-items    : flex-start;
+}
+
+.console-top-menu-item {
+    margin: 0 0.0em;
+}
+
+.console-top-menu-link {
+    padding: 0.5em 1em;
+
+    text-decoration: none;
+    color          : black;
+
+    border-bottom: 3px double black;
+    background   : white;
+}
+
+.console-top-menu-link:hover {
+    border-bottom: 3px solid black;
+}
+
+/* page */
+
+.console-columns-block {
+    margin : 2.5em 1.5em;
+}
+
+.console-column {
+    margin : 0 0.5em; 
+    width  : 100%;
+}
+
+.console-column-tile {
+    margin : 0 0 0.5em 0;
+    padding: 0.25em 0.5em;
+}
+
+.column-tile-header {
+    margin: 0.5em;
+}
+
+.column-tile-border {
+    border       : 1px solid gray;
+    border-radius: 4px;
+}
+
+.columns-block {
+    display: flex;
+
+    justify-content: flex-start;
+    align-items    : flex-start;
+}

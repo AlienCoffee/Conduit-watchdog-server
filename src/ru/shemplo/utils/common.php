@@ -28,4 +28,10 @@
         return false;
     } 
 
+    function get_script_file ($platform, $script) {
+        $content = file_get_contents ("configs/scripts.json");
+        $data = json_decode ($content, true);
+        return SERVER_SCRIPTS.$data [$platform][$script];
+    }
+
 ?>

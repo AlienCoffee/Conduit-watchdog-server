@@ -9,7 +9,7 @@ export class Request {
         protected data   : {}
     ) {};
 
-    public send (handler : (response : string) => void) : void {
+    public send <T> (handler : (response : T) => void) : void {
         var descriptor = new XMLHttpRequest ();
         descriptor.open (this.method, this.url, true);
 
@@ -20,7 +20,7 @@ export class Request {
             if (descriptor.readyState != 4) { return; }
             
             if (descriptor.status >= 200 && descriptor.status < 300) {
-                handler (descriptor.responseText);
+                handler (<T> JSON.parse (descriptor.responseText));
             } else {
                 var message = "Some error occured during connection to server (code " 
                             + descriptor.status + ")";
@@ -34,8 +34,8 @@ export class Request {
 export class PostRequest extends Request {
 
     constructor (
-        protected url : string,
-        protected data: {}
+        protected url  : string,
+        protected data : {}
     ) { super ("POST", url, data); };
 
 }
@@ -43,8 +43,15 @@ export class PostRequest extends Request {
 export class GetRequest extends Request {
 
     constructor (
-        protected url : string,
-        protected data: {}
+        protected url  : string,
+        protected data : {}
     ) { super ("GET", url, data); };
 
+}
+
+// Network objects (DTOs)
+
+export class AuthVerdict {
+    public verdict : boolean;
+    public message : string;
 }

@@ -24,7 +24,6 @@
         echo "<br />";
     }
     */
-
     
     $_user = Array ("authorized" => false);
     $_client_access_token = "guest";
@@ -45,6 +44,11 @@
     require_once ("src/ru/shemplo/controller.php");
 
     $controller = new MainController ();
+    find_request_handler ($controller);
+
+    require_once ("src/ru/shemplo/watchdog.php");
+
+    $controller = new WatchdogController ();
     find_request_handler ($controller);
 
 ?>
