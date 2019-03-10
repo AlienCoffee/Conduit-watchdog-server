@@ -16,7 +16,13 @@ define(["require", "exports", "./network", "./common", "./popup"], function (req
     }
     exports.attemptLogin = attemptLogin;
     function onResponse(response) {
-        console.log(response);
+        var data = JSON.parse(response);
+        if (!data.verdict) {
+            popup_1.addErrorPopupTile("Authentification failed", data.message, 10);
+        }
+        else {
+            location.reload();
+        }
     }
     exports.onResponse = onResponse;
 });

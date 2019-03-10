@@ -39,3 +39,12 @@ export class PostRequest extends Request {
     ) { super ("POST", url, data); };
 
 }
+
+export class GetRequest extends Request {
+
+    constructor (
+        protected url : string,
+        protected data: {}
+    ) { super ("GET", url, data); };
+
+}
