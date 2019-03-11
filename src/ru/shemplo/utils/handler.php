@@ -106,7 +106,7 @@
 
     }
 
-    class AuthVerdict implements ObjectHolder {
+    class Verdict implements ObjectHolder {
 
         private $verdict, $message;
 

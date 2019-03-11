@@ -10,12 +10,18 @@ export class Request {
     ) {};
 
     public send <T> (handler : (response : T) => void) : void {
-        var descriptor = new XMLHttpRequest ();
-        descriptor.open (this.method, this.url, true);
+        this.sendRequest (this.createRequest (handler));
+    }
 
+    protected sendRequest (descriptor : XMLHttpRequest) {
         descriptor.setRequestHeader ("Content-Type", "application/json");
         descriptor.send (JSON.stringify (this.data));
+    }
 
+    protected createRequest <T> (handler : (response : T) => void) : XMLHttpRequest {
+        var descriptor = new XMLHttpRequest ();
+        descriptor.open (this.method, this.url, true);
+        
         descriptor.onreadystatechange = function () {
             if (descriptor.readyState != 4) { return; }
             
@@ -27,6 +33,8 @@ export class Request {
                 addShortErrorPopupTile ("Request failed", message);
             }
         }
+
+        return descriptor;
     }
 
 }
@@ -46,6 +54,36 @@ export class GetRequest extends Request {
         protected url  : string,
         protected data : {}
     ) { super ("GET", url, data); };
+
+}
+
+export class PostRequestWithFiles extends PostRequest {
+
+    constructor (
+        protected url  : string,
+        protected data : {},
+        protected input: HTMLInputElement
+    ) { super (url, data); };
+
+    protected form = new FormData ();
+
+    protected sendRequest (descriptor : XMLHttpRequest) {
+        descriptor.send (this.form);
+    }
+
+    protected createRequest <T> (handler : (response : T) => void) : XMLHttpRequest {
+        var descriptor = super.createRequest (handler);
+        for (var i = 0; i < this.input.files.length; i++) {
+            var file = this.input.files [i];
+            this.form.append (file.name, file, file.name);
+        }
+
+        Object.keys (this.data).forEach (key => {
+            this.form.append (key, this.data [key]);
+        });
+
+        return descriptor;
+    }
 
 }
 

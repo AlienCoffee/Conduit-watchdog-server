@@ -2,6 +2,23 @@
 
 class WatchdogController {
 
+    public function handleWatchdogUpdate (
+        $context,
+        $paths      = ["/watchdog/update"],
+        $method     = "POST",
+        $authorized = true
+    ) {
+        $file_key = array_keys ($_FILES) [0]; // select only first file
+        $file = $_FILES [$file_key];
+        if (!in_array (get_file_extension ($file ["name"]), ["zip"])) {
+            return new Verdict (false, "Wrong file extension");
+        }
+
+        move_uploaded_file ($file ["tmp_name"], $file ["name"]);
+        
+        return json_encode ($_FILES);
+    }
+
     public function handleConsolePages (
         $context,
         $paths      = ["/watchdog/tasklist"],

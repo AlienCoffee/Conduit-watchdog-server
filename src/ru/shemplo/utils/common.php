@@ -34,4 +34,9 @@
         return SERVER_SCRIPTS.$data [$platform][$script];
     }
 
+    function get_file_extension ($filename) {
+        $parts = explode (".", $filename);
+        return $parts [count ($parts) - 1];
+    }
+
 ?>

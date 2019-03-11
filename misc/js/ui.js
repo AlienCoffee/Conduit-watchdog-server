@@ -1,7 +1,7 @@
 
 var __page_context = {};
 
-var loadContext = function (filenames) {
+var loadContext = function (filenames, callback) {
     for (var i = 0; i < filenames.length; i++) {
         filenames [i] = "misc/ts/" + filenames [i];
     }
@@ -13,5 +13,15 @@ var loadContext = function (filenames) {
                 __page_context [keys [j]] = arguments [i][keys [j]];
             }
         }
+
+        if (!callback) { return; }
+        
+        if (typeof callback === "string") {
+            __page_context [callback] ();
+        }
+
+        if (typeof callback === "function") {
+            callback ();
+        } 
     });
 }
