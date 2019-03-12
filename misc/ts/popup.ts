@@ -62,7 +62,7 @@ export class PopupTile {
 
     public destructAfter (timeout : number) {
         if (timeout > 0 && timeout < 300) { // from 1 to 300 seconds
-            setTimeout (this.delete, timeout * 1000);
+            setTimeout (() => this.delete (), timeout * 1000);
         }
     }
 
@@ -79,7 +79,7 @@ export class ErrorPopupTile extends PopupTile {
         message : string,
         timeout : number
     ) { 
-        var style : string = PopupTile.styles [2];
+        var style : string = PopupTile.styles [1];
         super (timeout, title, message, style); 
     }
 

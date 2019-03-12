@@ -16,6 +16,11 @@ class WatchdogController {
 
         move_uploaded_file ($file ["tmp_name"], $file ["name"]);
         unzip ($file ["name"]); unlink ($file ["name"]);
+
+        $buildfile = fopen ("configs/build.info", "w+t");
+        $time = date ("d.m.Y H:i:s", $context ["time"]);
+        fwrite ($buildfile, "Buld version from <u>$time</u>");
+        fclose ($buildfile);
         
         return new Verdict (true, "success");
     }
