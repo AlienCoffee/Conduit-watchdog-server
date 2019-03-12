@@ -2,8 +2,10 @@
 
     function find_request_handler ($controller) {
         global $_request_arguments;
+        global $_request_parsed;
         global $_request_method;
         global $_request_data;
+        global $_request_time;
         global $_user;
 
         $class_ref = new ReflectionClass ($controller);
@@ -32,9 +34,17 @@
 
             $request_context ["user"] = $_user;
             $request_context ["data"] = $_request_data;
+            $request_context ["time"] = $_request_time;
+            $request_context ["request"] = $_request_parsed;
             $request_context ["arguments"] = $_request_arguments;
-            
-            $return = $method_ref->invoke ($controller, $request_context);
+
+            $return = "";
+            try {
+                $return = $method_ref->invoke ($controller, 
+                                         $request_context);
+            } catch (Exception $exception) {
+                $return = new Verdict (false, $exception->getMessage ());
+            }
 
             if ($return instanceof PageHolder) {
                 $return->load_page ();
@@ -102,7 +112,7 @@
 
     }
 
-    class AuthVerdict implements ObjectHolder {
+    class Verdict implements ObjectHolder {
 
         private $verdict, $message;
 

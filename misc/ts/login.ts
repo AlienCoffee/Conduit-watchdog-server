@@ -1,6 +1,6 @@
-import { Request, PostRequest, GetRequest } from "./network";
+import { Request, PostRequest, GetRequest, AuthVerdict } from "./network";
 import { dataElement } from "./common";
-import { addShortErrorPopupTile, addErrorPopupTile } from "./popup";
+import { ErrorPopupTile } from "./popup";
 
 export function attemptLogin () {
     var login    = dataElement ("login").value;
@@ -13,15 +13,15 @@ export function attemptLogin () {
 
         request.send (onResponse);
     } else {
-        addShortErrorPopupTile ("Empty fields", 
-           "Login or password field is empty");
+        new ErrorPopupTile ("Empty fields", 
+                "Login or password field is empty", 5)
+                .show ();
     }
 }
 
-export function onResponse (response : string) {
-    var data = <{"verdict" : boolean, "message" : string}> JSON.parse (response);
-    if (!data.verdict) { 
-        addErrorPopupTile ("Authentification failed", 
-                           data.message, 10);
+export function onResponse (response : AuthVerdict) {
+    if (!response.verdict) { 
+        new ErrorPopupTile ("Authentification failed", 
+                response.message, 10).show ();
     } else { location.reload (); }
 }

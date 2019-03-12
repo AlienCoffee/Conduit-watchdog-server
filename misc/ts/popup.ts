@@ -1,30 +1,86 @@
 import { element } from './common'
 
-export function addPopupTile (title : string, message : string, 
-        style : string = "", timeout : number) : void {
-    var tile = document.createElement ("div");
-    tile.classList.add ("popup-tile", style);
+export class PopupTile {
 
-    var _title = document.createElement ("h4");
-    _title.classList.add ("popup-title");
-    tile.appendChild (_title);
-    _title.innerHTML = title;
+    protected tile    : HTMLDivElement;
+    protected title   : HTMLHeadingElement;
+    protected message : HTMLParagraphElement;
 
-    var _message = document.createElement ("p");
-    _message.classList.add ("popup-message");
-    tile.appendChild (_message);
-    _message.innerHTML = message;
+    constructor (
+        protected timeout : number,
+        title   : string,
+        message : string,
+        style   : string = "popup-info"
+    ) {
+        this.tile = document.createElement ("div");
+        this.tile.classList.add ("popup-tile", style);
+    
+        this.title = document.createElement ("h4");
+        this.title.classList.add ("popup-title");
+        this.tile.appendChild (this.title);
+        this.title.innerHTML = title;
+    
+        this.message = document.createElement ("p");
+        this.message.classList.add ("popup-message");
+        this.tile.appendChild (this.message);
+        this.message.innerHTML = message;
+    }
 
-    element ("popup").prepend (tile);
-    setTimeout (function () {
-        element ("popup").removeChild (tile);
-    }, timeout * 1000);
+    public changeTitle (title : string) : PopupTile {
+        this.title.innerHTML = title;
+        return this;
+    }
+    
+    public changeMessage (message : string) : PopupTile {
+        this.message.innerHTML = message;
+        return this;
+    }
+
+    protected static styles = ["popup-info", "popup-error"];
+
+    public changeStyle (style : string) : PopupTile {
+        PopupTile.styles.forEach (st => this.tile.classList.remove (st));
+        this.tile.classList.add (style);
+
+        return this;
+    }
+
+    public switchToInfo () : PopupTile { 
+        this.changeStyle (PopupTile.styles [1]); 
+        return this;
+    }
+
+    public switchToError () : PopupTile { 
+        this.changeStyle (PopupTile.styles [2]); 
+        return this;
+    }
+
+    public show () {
+        element ("popup").prepend (this.tile);
+        this.destructAfter (this.timeout);
+    }
+
+    public destructAfter (timeout : number) {
+        if (timeout > 0 && timeout < 300) { // from 1 to 300 seconds
+            setTimeout (() => this.delete (), timeout * 1000);
+        }
+    }
+
+    public delete () {
+        element ("popup").removeChild (this.tile);
+    }
+
 }
 
-export function addErrorPopupTile (title : string, message : string, timeout : number) {
-    addPopupTile (title, message, "popup-error", timeout);
-}
+export class ErrorPopupTile extends PopupTile {
 
-export function addShortErrorPopupTile (title : string, message : string) {
-    addErrorPopupTile (title, message, 5);
+    constructor (
+        title   : string,
+        message : string,
+        timeout : number
+    ) { 
+        var style : string = PopupTile.styles [1];
+        super (timeout, title, message, style); 
+    }
+
 }

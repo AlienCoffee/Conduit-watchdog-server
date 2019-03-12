@@ -28,4 +28,29 @@
         return false;
     } 
 
+    function get_script_file ($platform, $script) {
+        $content = file_get_contents ("configs/scripts.json");
+        $data = json_decode ($content, true);
+        return SERVER_SCRIPTS.$data [$platform][$script];
+    }
+
+    function get_file_extension ($filename) {
+        $parts = explode (".", $filename);
+        return $parts [count ($parts) - 1];
+    }
+
+    function unzip ($filepath) {
+        $zip = new ZipArchive ();
+        if (!@$zip->open ($filepath)) {
+            throw new Exception ("Failed to read archive");
+        }
+
+        $pathinfo = pathinfo (realpath ($filepath), PATHINFO_DIRNAME);
+        if (!@$zip->extractTo ($pathinfo)) {
+            $zip->close ();
+            throw new Exception ("Failed to unzip archive");
+        } else { $zip->close (); }
+
+    }
+
 ?>

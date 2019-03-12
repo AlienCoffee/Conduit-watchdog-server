@@ -2,9 +2,9 @@
 
 class MainController {
 
-    public function handleIndexPage (
+    public function handleConsolePages (
         $context,
-        $paths      = ["/", "/index"],
+        $paths      = ["/", "/(console)"],
         $method     = "GET",
         $authorized = false
     ) {
@@ -12,7 +12,10 @@ class MainController {
             return new PageHolder ("login", $context);
         }
 
-        return new PageHolder ("console", $context);
+        //$path = explode ("/", $context ["request"]["path"]);
+        $page = str_replace ("/", "", $context ["request"]["path"]);
+        if (strlen ($page) == 0) { $page = "console"; }
+        return new PageHolder ($page, $context);
     }
 
     public function handleLoginAttempt (
@@ -26,10 +29,10 @@ class MainController {
         $token = try_authorize ($data ["login"], $data ["password"]);
         if ($token) {
             setcookie ("session", $token, time () + 60 * 60 * 1, "/");
-            return new AuthVerdict (true, "");
+            return new Verdict (true, "");
         }
 
-        return new AuthVerdict (false, "Wrong login or password");
+        return new Verdict (false, "Wrong login or password");
     }
 
 }
