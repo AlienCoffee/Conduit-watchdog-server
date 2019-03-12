@@ -1,4 +1,4 @@
-import { addShortErrorPopupTile } from "./popup";
+import { ErrorPopupTile } from "./popup";
 
 
 export class Request {
@@ -30,7 +30,7 @@ export class Request {
             } else {
                 var message = "Some error occured during connection to server (code " 
                             + descriptor.status + ")";
-                addShortErrorPopupTile ("Request failed", message);
+                new ErrorPopupTile ("Request failed", message, 5).show ();
             }
         }
 

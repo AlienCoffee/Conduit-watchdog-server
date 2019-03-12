@@ -15,8 +15,9 @@ class WatchdogController {
         }
 
         move_uploaded_file ($file ["tmp_name"], $file ["name"]);
+        unzip ($file ["name"]); unlink ($file ["name"]);
         
-        return json_encode ($_FILES);
+        return new Verdict (true, "success");
     }
 
     public function handleConsolePages (

@@ -38,7 +38,13 @@
             $request_context ["request"] = $_request_parsed;
             $request_context ["arguments"] = $_request_arguments;
 
-            $return = $method_ref->invoke ($controller, $request_context);
+            $return = "";
+            try {
+                $return = $method_ref->invoke ($controller, 
+                                         $request_context);
+            } catch (Exception $exception) {
+                $return = new Verdict (false, $exception->getMessage ());
+            }
 
             if ($return instanceof PageHolder) {
                 $return->load_page ();

@@ -1,5 +1,5 @@
-import { addPopupTile, addShortErrorPopupTile } from "./popup";
-import { element, dataElement, inputElement } from "./common";
+import { ErrorPopupTile } from "./popup";
+import { dataElement, inputElement } from "./common";
 import { PostRequestWithFiles } from "./network";
 
 
@@ -19,8 +19,9 @@ export function initConsole () : void {
             if (["zip", "gzip"].indexOf (extension) !== -1) {
                 status.innerHTML = " " + file + " ";
             } else {
-                addShortErrorPopupTile ("Wrong file selected", 
-                      "Only archives .zip and .gzip allowed");
+                new ErrorPopupTile ("Wrong file selected", 
+                        "Only archives .zip and .gzip allowed", 5)
+                        .show ();
                 status.innerHTML = "file not selected";
                 input.value = "";
             }
@@ -31,8 +32,9 @@ export function initConsole () : void {
 export function uploadWatchdogUpdate () : void {
     var input = inputElement ("watchdogUpdateFile");
     if (!input.value) {
-        addShortErrorPopupTile ("Updating failed", 
-                    "No update archives selected");
+        new ErrorPopupTile ("Updating failed", 
+                "No update archives selected", 5)
+                .show ();
     } else {
         var request = new PostRequestWithFiles ("/watchdog/update", {}, input);
         request.send (_ => console.log);
