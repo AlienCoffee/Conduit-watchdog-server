@@ -1,6 +1,6 @@
-import { ErrorPopupTile } from "./popup";
+import { ErrorPopupTile, PopupTile } from "./popup";
 import { dataElement, inputElement } from "./common";
-import { PostRequestWithFiles } from "./network";
+import { PostRequestWithFiles, AuthVerdict } from "./network";
 
 
 export function initConsole () : void {
@@ -15,7 +15,6 @@ export function initConsole () : void {
                      . split ("/").reduce ((_, v) => v, "");
             var extension = file.split (".").reduce ((_, v) => v, "")
                           . toLowerCase ();
-            console.log (extension);
             if (["zip", "gzip"].indexOf (extension) !== -1) {
                 status.innerHTML = " " + file + " ";
             } else {
@@ -37,6 +36,15 @@ export function uploadWatchdogUpdate () : void {
                 .show ();
     } else {
         var request = new PostRequestWithFiles ("/watchdog/update", {}, input);
-        request.send (_ => console.log);
+        var popup = new PopupTile (10, "Updating watchdog", "Processing update on server");
+        popup.show ();
+
+        request.send ((response : AuthVerdict) => {
+            if (!response.verdict) {
+                popup.changeMessage (response.message)
+                     .switchToError ()
+                     .destructAfter (10);
+            } else { location.reload (); }
+        });
     }
 }

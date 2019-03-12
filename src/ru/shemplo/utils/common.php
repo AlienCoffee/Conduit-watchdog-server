@@ -45,7 +45,7 @@
             throw new Exception ("Failed to read archive");
         }
 
-        $pathinfo = pathinfo (realpath ($filepath), PATHINFO_DIRNAME)."/test";
+        $pathinfo = pathinfo (realpath ($filepath), PATHINFO_DIRNAME);
         if (!@$zip->extractTo ($pathinfo)) {
             $zip->close ();
             throw new Exception ("Failed to unzip archive");

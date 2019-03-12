@@ -7,10 +7,10 @@ export class PopupTile {
     protected message : HTMLParagraphElement;
 
     constructor (
+        protected timeout : number,
         title   : string,
         message : string,
-        style   : string,
-        protected timeout : number 
+        style   : string = "popup-info"
     ) {
         this.tile = document.createElement ("div");
         this.tile.classList.add ("popup-tile", style);
@@ -41,6 +41,7 @@ export class PopupTile {
     public changeStyle (style : string) : PopupTile {
         PopupTile.styles.forEach (st => this.tile.classList.remove (st));
         this.tile.classList.add (style);
+
         return this;
     }
 
@@ -56,9 +57,12 @@ export class PopupTile {
 
     public show () {
         element ("popup").prepend (this.tile);
+        this.destructAfter (this.timeout);
+    }
 
-        if (this.timeout > 0 && this.timeout < 300) { // from 1 to 300 seconds
-            setTimeout (this.delete, this.timeout * 1000);
+    public destructAfter (timeout : number) {
+        if (timeout > 0 && timeout < 300) { // from 1 to 300 seconds
+            setTimeout (this.delete, timeout * 1000);
         }
     }
 
@@ -76,7 +80,7 @@ export class ErrorPopupTile extends PopupTile {
         timeout : number
     ) { 
         var style : string = PopupTile.styles [2];
-        super (title, message, style, timeout); 
+        super (timeout, title, message, style); 
     }
 
 }
