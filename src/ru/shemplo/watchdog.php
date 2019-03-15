@@ -19,10 +19,23 @@ class WatchdogController {
 
         $buildfile = fopen ("configs/build.info", "w+t");
         $time = date ("d.m.Y H:i:s", $context ["time"]);
-        fwrite ($buildfile, "Buld version from <u>$time</u>");
+        fwrite ($buildfile, "Build version from <u>$time</u>");
         fclose ($buildfile);
         
         return new Verdict (true, "success");
+    }
+
+    public function handleWatchdogScripts (
+        $context,
+        $paths      = ["/watchdog/scripts"],
+        $method     = "GET",
+        $authorized = true
+    ) {
+        return json_encode (Array (
+            "verdict" => true,
+            "message" => "",
+            "scripts" => get_files_and_folders (SERVER_SCRIPTS) ["files"]
+        ));
     }
 
     public function handleConsolePages (

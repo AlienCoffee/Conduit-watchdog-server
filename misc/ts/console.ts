@@ -1,6 +1,6 @@
 import { ErrorPopupTile, PopupTile } from "./popup";
 import { dataElement, inputElement } from "./common";
-import { PostRequestWithFiles, AuthVerdict } from "./network";
+import { PostRequestWithFiles, Verdict } from "./network";
 
 
 export function initConsole () : void {
@@ -39,7 +39,7 @@ export function uploadWatchdogUpdate () : void {
         var popup = new PopupTile (10, "Updating watchdog", "Processing update on server");
         popup.show ();
 
-        request.send ((response : AuthVerdict) => {
+        request.send ((response : Verdict) => {
             if (!response.verdict) {
                 popup.changeMessage (response.message)
                      .switchToError ()
