@@ -4,7 +4,7 @@ class MainController {
 
     public function handleConsolePages (
         $context,
-        $paths      = ["/", "/(console)"],
+        $paths      = ["/", "/(console|scripts)"],
         $method     = "GET",
         $authorized = false
     ) {

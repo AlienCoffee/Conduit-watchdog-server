@@ -1,4 +1,4 @@
-import { Request, PostRequest, GetRequest, AuthVerdict } from "./network";
+import { Request, PostRequest, GetRequest, Verdict } from "./network";
 import { dataElement } from "./common";
 import { ErrorPopupTile } from "./popup";
 
@@ -19,7 +19,7 @@ export function attemptLogin () {
     }
 }
 
-export function onResponse (response : AuthVerdict) {
+export function onResponse (response : Verdict) {
     if (!response.verdict) { 
         new ErrorPopupTile ("Authentification failed", 
                 response.message, 10).show ();

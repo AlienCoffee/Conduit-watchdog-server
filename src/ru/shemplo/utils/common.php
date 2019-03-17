@@ -34,6 +34,12 @@
         return SERVER_SCRIPTS.$data [$platform][$script];
     }
 
+    function get_file_name ($path) {
+        $path = str_replace ("\\", "/", $path);
+        $parts = explode ("/", $path);
+        return $parts [count ($parts) - 1];
+    }
+
     function get_file_extension ($filename) {
         $parts = explode (".", $filename);
         return $parts [count ($parts) - 1];
@@ -51,6 +57,61 @@
             throw new Exception ("Failed to unzip archive");
         } else { $zip->close (); }
 
+    }
+
+    function total_scripts_by_platform () {
+        $files = get_files_and_folders (SERVER_SCRIPTS) ["files"];
+        $counters = Array (
+            "windows" => 0,
+            "linux"   => 0
+        );
+
+        foreach ($files as $file) {
+            $counters [$file ["platform"]] += 1;
+        }
+
+        return $counters;
+    }
+
+    function get_files_and_folders ($path) {
+        $counters = Array (
+            "files"   => Array (),
+            "folders" => Array ()
+        );
+
+        $stack = [$path];
+        while (count ($stack) != 0) {
+            $dir = array_pop ($stack);
+            
+            if (!is_dir ($dir) && is_file ($dir)) {
+                $extension = get_file_extension ($dir);
+                array_push ($counters ["files"], Array (
+                    "name"      => str_replace (".$extension", "", get_file_name ($dir)),
+                    "extension" => $extension,
+                    "path"      => $dir,
+                    "platform"  => $extension === "cmd"
+                                 ? "windows"
+                                 : ($extension === "sh"
+                                 ? "linux"
+                                 : "unknown"),
+                    "created"  => filectime ($dir)
+                ));
+                continue;
+            } else if (is_dir ($dir)) {
+                array_push ($counters ["folders"], Array (
+                    "name" => get_file_name ($dir),
+                    "path" => $dir
+                ));
+                foreach (scandir ($dir) as $tmp_path) {
+                    if ($tmp_path == "." || $tmp_path == "..") {
+                        continue; // Prevent endless loop
+                    }
+                    array_push ($stack, $path.$tmp_path);
+                }
+            }
+        }
+
+        return $counters;
     }
 
 ?>

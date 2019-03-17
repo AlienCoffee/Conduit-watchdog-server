@@ -9,8 +9,9 @@ export class Request {
         protected data   : {}
     ) {};
 
-    public send <T> (handler : (response : T) => void) : void {
-        this.sendRequest (this.createRequest (handler));
+    public send <T> (handler : (response : T) => void, 
+            fixer? : (response : string) => boolean) : void {
+        this.sendRequest (this.createRequest (handler, fixer));
     }
 
     protected sendRequest (descriptor : XMLHttpRequest) {
@@ -18,7 +19,8 @@ export class Request {
         descriptor.send (JSON.stringify (this.data));
     }
 
-    protected createRequest <T> (handler : (response : T) => void) : XMLHttpRequest {
+    protected createRequest <T> (handler : (response : T) => void, 
+            fixer : (response : string) => boolean) : XMLHttpRequest {
         var descriptor = new XMLHttpRequest ();
         descriptor.open (this.method, this.url, true);
         
@@ -26,7 +28,16 @@ export class Request {
             if (descriptor.readyState != 4) { return; }
             
             if (descriptor.status >= 200 && descriptor.status < 300) {
-                handler (<T> JSON.parse (descriptor.responseText));
+                var text = descriptor.responseText;
+                if (text && (text.startsWith ("{") || text.startsWith ("["))) {
+                    handler (<T> JSON.parse (descriptor.responseText));
+                } else if (fixer == null || !fixer (text)) {
+                    var message = "Server returned answer that can't be parsed" 
+                                + " (see console for details)";
+                    new ErrorPopupTile ("Failed to parse response", 
+                                        message, 10).show ();
+                    console.log (text);
+                }
             } else {
                 var message = "Some error occured during connection to server (code " 
                             + descriptor.status + ")";
@@ -71,8 +82,9 @@ export class PostRequestWithFiles extends PostRequest {
         descriptor.send (this.form);
     }
 
-    protected createRequest <T> (handler : (response : T) => void) : XMLHttpRequest {
-        var descriptor = super.createRequest (handler);
+    protected createRequest <T> (handler : (response : T) => void, 
+            fixer? : (response : string) => boolean) : XMLHttpRequest {
+        var descriptor = super.createRequest (handler, fixer);
         for (var i = 0; i < this.input.files.length; i++) {
             var file = this.input.files [i];
             this.form.append (file.name, file, file.name);
@@ -89,7 +101,18 @@ export class PostRequestWithFiles extends PostRequest {
 
 // Network objects (DTOs)
 
-export class AuthVerdict {
+export class Verdict {
     public verdict : boolean;
     public message : string;
+}
+
+export class Script {
+    public name      : string;
+    public extension : string;
+    public platform  : string;
+    public created   : string;
+}
+
+export class ScriptsBatch extends Verdict {
+    public scripts : Script [];
 }
