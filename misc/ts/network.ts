@@ -107,9 +107,10 @@ export class Verdict {
 }
 
 export class Script {
-    public name     : string;
-    public platform : string;
-    public created  : string;
+    public name      : string;
+    public extension : string;
+    public platform  : string;
+    public created   : string;
 }
 
 export class ScriptsBatch extends Verdict {

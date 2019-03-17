@@ -86,14 +86,15 @@
             if (!is_dir ($dir) && is_file ($dir)) {
                 $extension = get_file_extension ($dir);
                 array_push ($counters ["files"], Array (
-                    "name"     => get_file_name ($dir),
-                    "path"     => $dir,
-                    "platform" => $extension === "cmd"
-                                ? "windows"
-                                : ($extension === "sh"
-                                ? "linux"
-                                : "unknown"),
-                    "created" => filectime ($dir)
+                    "name"      => str_replace (".$extension", "", get_file_name ($dir)),
+                    "extension" => $extension,
+                    "path"      => $dir,
+                    "platform"  => $extension === "cmd"
+                                 ? "windows"
+                                 : ($extension === "sh"
+                                 ? "linux"
+                                 : "unknown"),
+                    "created"  => filectime ($dir)
                 ));
                 continue;
             } else if (is_dir ($dir)) {

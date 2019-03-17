@@ -112,6 +112,8 @@
                             <div></div> <div></div> <div></div>
                         </span>
                     </h3>
+
+                    <ul class="console-list" id="listOfScripts"></ul>
                 </div>
             </div>
             <div class="console-column">
