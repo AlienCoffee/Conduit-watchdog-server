@@ -49,6 +49,26 @@ function refreshScripts (scripts : Script []) {
         name.classList.add ("script-item-name");
         name.innerHTML = script.name;
         line.appendChild (name);
+
+        // Run button
+        var button = document.createElement ("button");
+        button.id = [script.platform, script.name].join (";");
+        button.classList.add ("script-item-button");
+        line.appendChild (button);
+
+        var buttonIcon = document.createElement ("img");
+        buttonIcon.src = "/misc/img/icons/play-arrow.svg";
+        button.appendChild (buttonIcon);
+
+        // Delete button
+        var button = document.createElement ("button");
+        button.id = [script.platform, script.name].join (";");
+        button.classList.add ("script-item-button");
+        line.appendChild (button);
+
+        var buttonIcon = document.createElement ("img");
+        buttonIcon.src = "/misc/img/icons/trash-bin.svg";
+        button.appendChild (buttonIcon);
     });
 }
 
