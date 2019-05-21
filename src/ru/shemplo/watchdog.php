@@ -17,11 +17,15 @@ class WatchdogController {
         move_uploaded_file ($file ["tmp_name"], $file ["name"]);
         unzip ($file ["name"]); unlink ($file ["name"]);
 
-        $buildfile = fopen ("configs/build.info", "w+t");
+
+        //$buildfile = fopen ("configs/build.info", "w+t");
         $time = date ("d.m.Y H:i:s", $context ["time"]);
-        fwrite ($buildfile, "Build version from <u>$time</u>");
-        fclose ($buildfile);
-        
+        //fwrite ($buildfile, "Build version from <u>$time</u>");
+        //fclose ($buildfile);
+
+        //* https://www.php.net/manual/ru/function.file-put-contents.php
+        file_put_contents("configs/build.info", "Build version from <u>$time</u>");
+
         return new Verdict (true, "success");
     }
 
@@ -52,7 +56,7 @@ class WatchdogController {
         if (str_compare ($platform, "windows")) {
             exec ("\"$script_file\"", $output_lines);
         }
-        
+
         return json_encode ($output_lines);
     }
 
