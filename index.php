@@ -9,21 +9,20 @@
 
     $_request_arguments = Array ();
     $_request_data = file_get_contents ('php://input');
-	//* Можно не склеивать (см. ниже)
-	/*$_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
+    //* Можно не склеивать (см. ниже)
+    /*$_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
                $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
     */
-    //* Частичный адрес тоже парсит
-    $request_url = $_SERVER ['REQUEST_URI'];
     // Parsed on components URL address
-	$_request_parsed = parse_url ($request_url);
+    //* Частичный адрес тоже парсит
+    $_request_parsed = parse_url ($_SERVER ['REQUEST_URI']);
 
 
-	if (isset($_request_parsed['query'])){ //* Добавил
-		// Getting all arguments after ? sign in request string
-		//* Выдает предупреждение при включенном E_NOTICE в PHP
-		parse_str ($_request_parsed ['query'], $_request_arguments);
-	}
+    if (isset($_request_parsed['query'])){ //* Добавил
+        // Getting all arguments after ? sign in request string
+        //* Выдает предупреждение при включенном E_NOTICE в PHP
+        parse_str ($_request_parsed ['query'], $_request_arguments);
+    }
 
     $_user = Array ("authorized" => false);
     $_client_access_token = "guest";
@@ -50,3 +49,5 @@
 
     $controller = new WatchdogController ();
     find_request_handler ($controller);
+
+?>
