@@ -1,3 +1,3 @@
-# Conduit-watchdog-server
+# Conduit Watchdog Server
 
-Еще пока осваиваюсь
+Неплохая вещица - скажу я вам
