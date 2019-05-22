@@ -1,11 +1,34 @@
-import { element, clearChildren } from "./common";
-import { GetRequest, ScriptsBatch, Verdict, Script } from "./network";
-import { ErrorPopupTile } from "./popup";
+import { element, clearChildren, dataElement, inputElement } from "./common";
+import { GetRequest, ScriptsBatch, Verdict, Script, PostRequestWithFiles } from "./network";
+import { ErrorPopupTile, PopupTile } from "./popup";
 
 
 export function initScripts () : void {
     setInterval (() => scriptsUpdateHandler (), 60_000);
     scriptsUpdateHandler (); // Initial update
+
+    dataElement ("scriptFile").onchange = function (_ : Event) : void {
+        var input = inputElement ("scriptFile");
+        var parent = input.parentElement;
+        var status = parent.getElementsByClassName ("file-upload-selection") [0];
+        if   (!input.value) { status.innerHTML = "file not selected"; } 
+        else {
+            var file = input.value.replace (new RegExp ("\\\\", "g"), "/")
+                     . split ("/").reduce ((_, v) => v, "");
+            var extension = file.split (".").reduce ((_, v) => v, "")
+                          . toLowerCase ();
+
+            if (["cmd", "sh"].indexOf (extension) !== -1) {
+                status.innerHTML = " " + file + " ";
+            } else {
+                new ErrorPopupTile ("Wrong file selected", 
+                        "Only .sh or .cmd files are allowed", 5)
+                        .show ();
+                status.innerHTML = "file not selected";
+                input.value = "";
+            }
+        }
+    }
 }
 
 var scripts : Script [] = [];
@@ -49,9 +72,46 @@ function refreshScripts (scripts : Script []) {
         name.classList.add ("script-item-name");
         name.innerHTML = script.name;
         line.appendChild (name);
+
+        // Run button
+        var button = document.createElement ("button");
+        button.id = [script.platform, script.name].join (";");
+        button.classList.add ("script-item-button");
+        line.appendChild (button);
+
+        var buttonIcon = document.createElement ("img");
+        buttonIcon.src = "/misc/img/icons/play-arrow.svg";
+        button.appendChild (buttonIcon);
+
+        // Delete button
+        var button = document.createElement ("button");
+        button.id = [script.platform, script.name].join (";");
+        button.classList.add ("script-item-button");
+        line.appendChild (button);
+
+        var buttonIcon = document.createElement ("img");
+        buttonIcon.src = "/misc/img/icons/trash-bin.svg";
+        button.appendChild (buttonIcon);
     });
 }
 
 export function uploadScript () {
-    
+    var input = inputElement ("scriptFile");
+    if (!input.value) {
+        new ErrorPopupTile ("Uploading failed", 
+                "None files selected", 5)
+                .show ();
+    } else {
+        var request = new PostRequestWithFiles ("/watchdog/scripts", {}, input);
+        var popup = new PopupTile (10, "Uploading scripts", "Processing upload on server");
+        popup.show ();
+
+        request.send ((response : Verdict) => {
+            if (!response.verdict) {
+                popup.changeMessage (response.message)
+                     .switchToError ()
+                     .destructAfter (10);
+            } else { location.reload (); }
+        });
+    }
 }
