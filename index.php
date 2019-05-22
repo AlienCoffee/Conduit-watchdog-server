@@ -9,20 +9,22 @@
 
     $_request_arguments = Array ();
     $_request_data = file_get_contents ('php://input');
-    //* Можно не склеивать (см. ниже)
-    /*$_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
+    $_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
                $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
-    */
+
     // Parsed on components URL address
-    //* Частичный адрес тоже парсит
-    $_request_parsed = parse_url ($_SERVER ['REQUEST_URI']);
+    $_request_parsed = parse_url ($_request_url);
 
+    $_query = (isset($_request_parsed ['query']) ? $_request_parsed ['query']: "");
+    // Getting all arguments after ? sign in request string
+    parse_str ($_query, $_request_arguments);
 
-    if (isset($_request_parsed['query'])){ //* Добавил
-        // Getting all arguments after ? sign in request string
-        //* Выдает предупреждение при включенном E_NOTICE в PHP
-        parse_str ($_request_parsed ['query'], $_request_arguments);
+    /*
+    foreach ($_SERVER as $key => $value) {
+        echo "$key: "; print_r ($value);
+        echo "<br />";
     }
+    */
 
     $_user = Array ("authorized" => false);
     $_client_access_token = "guest";
