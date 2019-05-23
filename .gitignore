@@ -6,6 +6,7 @@ node_modules/
 package.json
 
 configs/
+debug/
 
 *.js.map
 */ts/*.js
