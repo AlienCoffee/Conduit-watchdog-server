@@ -46,7 +46,8 @@ class WatchdogController {
     ) {
         $file_key = array_keys ($_FILES) [0]; // select only first file
         $file = $_FILES [$file_key];
-        $extension = get_file_extension ($file ["name"]);
+
+        $extension = pathinfo ($file ["name"], PATHINFO_EXTENSION);
         if (!in_array ($extension, ["cmd", "sh"])) {
             return new Verdict (false, "Wrong file extension");
         }
@@ -57,13 +58,12 @@ class WatchdogController {
             $scripts = json_decode(file_get_contents("configs/scripts.json"), true);               
         } else {
             return new Verdict (false, "Unknown location for scripts.json");
-        }        
-
-        if ($extension == "cmd") {
-            $scripts['windows']['tasklist'] = $file ["name"];
-        } else {
-            $scripts['linux']['tasklist'] = $file ["name"];
-        }
+        }   
+             
+        $filename = pathinfo ($file["name"], PATHINFO_FILENAME);
+        $platform = ($extension == "cmd"? "windows": "linux");
+        $scripts[$platform][$filename] = $file ["name"];
+        
         file_put_contents("configs/scripts.json", json_encode($scripts));
 
         return new Verdict (true, "success");
