@@ -11,6 +11,9 @@ export function initScripts () : void {
         var input = inputElement ("scriptFile");
         var parent = input.parentElement;
         var status = parent.getElementsByClassName ("file-upload-selection") [0];
+		//var textarea = parent.parentElement;
+		//var filename = textarea.getElementsByClassName ("form-textarea") [0];
+		
         if   (!input.value) { status.innerHTML = "file not selected"; } 
         else {
             var file = input.value.replace (new RegExp ("\\\\", "g"), "/")
@@ -29,6 +32,16 @@ export function initScripts () : void {
             }
         }
     }
+	dataElement("filename").onchange = function (_ : Event) : void {
+               
+		var filename = <HTMLTextAreaElement> element("filename");
+
+		if (!filename.value){
+            filename.value = "";
+		} else {
+			
+		}
+	}
 }
 
 var scripts : Script [] = [];
@@ -64,18 +77,19 @@ function refreshScripts (scripts : Script []) {
 
     scripts.forEach (script => {
         var line = document.createElement ("li");
-        line.classList.add (script.platform + "-script");
+        //script.platform
+        line.classList.add (script[0].platform + "-script");
         line.classList.add ("console-list-item");
         list.appendChild (line);
 
         var name = document.createElement ("span");
         name.classList.add ("script-item-name");
-        name.innerHTML = script.name;
+        name.innerHTML = script[0].name;
         line.appendChild (name);
 
         // Run button
         var button = document.createElement ("button");
-        button.id = [script.platform, script.name].join (";");
+        button.id = [script[0].platform, script[0].name].join (";");
         button.classList.add ("script-item-button");
         line.appendChild (button);
 
@@ -85,7 +99,7 @@ function refreshScripts (scripts : Script []) {
 
         // Delete button
         var button = document.createElement ("button");
-        button.id = [script.platform, script.name].join (";");
+        button.id = [script[0].platform, script[0].name].join (";");
         button.classList.add ("script-item-button");
         line.appendChild (button);
 
@@ -97,12 +111,14 @@ function refreshScripts (scripts : Script []) {
 
 export function uploadScript () {
     var input = inputElement ("scriptFile");
-    if (!input.value) {
+	var filename = <HTMLTextAreaElement> element("filename");
+    if (!filename) {
         new ErrorPopupTile ("Uploading failed", 
                 "None files selected", 5)
                 .show ();
     } else {
-        var request = new PostRequestWithFiles ("/watchdog/scripts", {}, input);
+        alert(filename.value);
+        var request = new PostRequestWithFiles ("/watchdog/scripts", {filename: filename}, input);
         var popup = new PopupTile (10, "Uploading scripts", "Processing upload on server");
         popup.show ();
 

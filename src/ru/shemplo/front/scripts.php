@@ -92,7 +92,7 @@
                             </span>
                         </label>
                         <div>
-                            <textarea class="form-textarea"></textarea>
+                            <textarea id="filename" class="form-textarea"></textarea>
                         </div>
                         <button class="file-upload-button" 
                             onclick="__page_context.uploadScript ()">

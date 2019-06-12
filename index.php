@@ -1,5 +1,5 @@
 <?php
-
+    
     require_once ("src/configs.php");
     require_once ("src/ru/shemplo/utils/common.php");
     require_once ("src/ru/shemplo/utils/front.php");
