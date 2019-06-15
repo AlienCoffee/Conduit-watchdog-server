@@ -65,7 +65,7 @@ class WatchdogController {
         
         $id = rand(1,717);
         // Не могу прочитать отправляемое имя файла из textarea
-        $scripts[$platform][$id]['name']="test";//.//$_GET['filename'];
+        $scripts[$platform][$id]['name']=$context["data"]["filename"];
         $scripts[$platform][$id]['file']=$file ["name"];
         
         file_put_contents("configs/scripts.json", json_encode($scripts));

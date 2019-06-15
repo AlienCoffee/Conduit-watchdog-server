@@ -9,8 +9,9 @@
 
     $_request_arguments = Array ();
     $_request_data = file_get_contents ('php://input');
+            
     $_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
-               $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
+        $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
 
     // Parsed on components URL address
     $_request_parsed = parse_url ($_request_url);

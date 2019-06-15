@@ -78,18 +78,18 @@ function refreshScripts (scripts : Script []) {
     scripts.forEach (script => {
         var line = document.createElement ("li");
         //script.platform
-        line.classList.add (script[0].platform + "-script");
+        line.classList.add (script.platform + "-script");
         line.classList.add ("console-list-item");
         list.appendChild (line);
 
         var name = document.createElement ("span");
         name.classList.add ("script-item-name");
-        name.innerHTML = script[0].name;
+        name.innerHTML = script.name;
         line.appendChild (name);
 
         // Run button
         var button = document.createElement ("button");
-        button.id = [script[0].platform, script[0].name].join (";");
+        button.id = [script.platform, script.name].join (";");
         button.classList.add ("script-item-button");
         line.appendChild (button);
 
@@ -99,7 +99,7 @@ function refreshScripts (scripts : Script []) {
 
         // Delete button
         var button = document.createElement ("button");
-        button.id = [script[0].platform, script[0].name].join (";");
+        button.id = [script.platform, script.name].join (";");
         button.classList.add ("script-item-button");
         line.appendChild (button);
 
@@ -112,13 +112,12 @@ function refreshScripts (scripts : Script []) {
 export function uploadScript () {
     var input = inputElement ("scriptFile");
 	var filename = <HTMLTextAreaElement> element("filename");
-    if (!filename) {
+    if (!input.value) {
         new ErrorPopupTile ("Uploading failed", 
                 "None files selected", 5)
                 .show ();
     } else {
-        alert(filename.value);
-        var request = new PostRequestWithFiles ("/watchdog/scripts", {filename: filename}, input);
+        var request = new PostRequestWithFiles ("/watchdog/scripts", {filename: filename.value}, input);
         var popup = new PopupTile (10, "Uploading scripts", "Processing upload on server");
         popup.show ();
 
