@@ -13,8 +13,8 @@ export function initScripts () : void {
         var status = parent.getElementsByClassName ("file-upload-selection") [0];
 		//var textarea = parent.parentElement;
 		//var filename = textarea.getElementsByClassName ("form-textarea") [0];
-		
-        if   (!input.value) { status.innerHTML = "file not selected"; } 
+
+        if   (!input.value) { status.innerHTML = "file not selected"; }
         else {
             var file = input.value.replace (new RegExp ("\\\\", "g"), "/")
                      . split ("/").reduce ((_, v) => v, "");
@@ -24,7 +24,7 @@ export function initScripts () : void {
             if (["cmd", "sh"].indexOf (extension) !== -1) {
                 status.innerHTML = " " + file + " ";
             } else {
-                new ErrorPopupTile ("Wrong file selected", 
+                new ErrorPopupTile ("Wrong file selected",
                         "Only .sh or .cmd files are allowed", 5)
                         .show ();
                 status.innerHTML = "file not selected";
@@ -33,13 +33,13 @@ export function initScripts () : void {
         }
     }
 	dataElement("filename").onchange = function (_ : Event) : void {
-               
+
 		var filename = <HTMLTextAreaElement> element("filename");
 
 		if (!filename.value){
             filename.value = "";
 		} else {
-			
+
 		}
 	}
 }
@@ -54,7 +54,7 @@ function scriptsUpdateHandler () {
     . send ((response : ScriptsBatch) => {
         preloader.style.opacity = "0";
         if (!response.verdict) {
-            new ErrorPopupTile ("Scripts retrieving failed", 
+            new ErrorPopupTile ("Scripts retrieving failed",
                                 response.message, 10).show ();
             return;
         }
@@ -63,10 +63,10 @@ function scriptsUpdateHandler () {
         refreshScripts (scripts);
     }, _ => {
         preloader.style.opacity = "0";
-        
+
         var list = element ("listOfScripts");
         clearChildren (list);
-        
+
         return false; // still notify about error
     });
 }
@@ -113,7 +113,7 @@ export function uploadScript () {
     var input = inputElement ("scriptFile");
 	var filename = <HTMLTextAreaElement> element("filename");
     if (!input.value) {
-        new ErrorPopupTile ("Uploading failed", 
+        new ErrorPopupTile ("Uploading failed",
                 "None files selected", 5)
                 .show ();
     } else {

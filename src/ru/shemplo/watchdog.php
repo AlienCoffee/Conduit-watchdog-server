@@ -21,7 +21,7 @@ class WatchdogController {
         $time = date ("d.m.Y H:i:s", $context ["time"]);
         fwrite ($buildfile, "Build version from <u>$time</u>");
         fclose ($buildfile);
-        
+
         return new Verdict (true, "success");
     }
 
@@ -35,7 +35,7 @@ class WatchdogController {
             "verdict" => true,
             "message" => "",
             "scripts" => get_files_and_folders (SERVER_SCRIPTS) ["files"]
-        ));        
+        ));
     }
 
     public function handleWatchdogScriptsUpload (
@@ -53,21 +53,21 @@ class WatchdogController {
         }
 
         move_uploaded_file ($file ["tmp_name"], SERVER_SCRIPTS.$file ["name"]);
-        
+
         if (file_exists("configs/scripts.json")){
-            $scripts = json_decode(file_get_contents("configs/scripts.json"), true);               
+            $scripts = json_decode(file_get_contents("configs/scripts.json"), true);
         } else {
             return new Verdict (false, "Unknown location for scripts.json");
-        }   
-             
+        }
+
         $filename = pathinfo ($file["name"], PATHINFO_FILENAME);
         $platform = ($extension == "cmd"? "windows": "linux");
-        
+
         $id = rand(1,717);
-        // Не могу прочитать отправляемое имя файла из textarea
-        $scripts[$platform][$id]['name']=$context["data"]["filename"];
+
+        $scripts[$platform][$id]['name']=$_POST["filename"];
         $scripts[$platform][$id]['file']=$file ["name"];
-        
+
         file_put_contents("configs/scripts.json", json_encode($scripts));
 
         return new Verdict (true, "success");
@@ -86,7 +86,7 @@ class WatchdogController {
         if (str_compare ($platform, "windows")) {
             exec ("\"$script_file\"", $output_lines);
         }
-        
+
         return json_encode ($output_lines);
     }
 

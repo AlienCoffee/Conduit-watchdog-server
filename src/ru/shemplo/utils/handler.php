@@ -32,14 +32,8 @@
                 continue; // This handler is avalilable for logged in user
             }
 
-            $request_context ["user"] = $_user;
-            
-            if (is_array($_request_data)){
-                $request_context ["data"] = array_merge($_request_data, $_POST);
-            }else{
-                $request_context ["data"] = $_POST; 
-            }
-                
+            $request_context ["user"] = $_user;                                        
+            $request_context ["data"] = $_request_data;                           
             $request_context ["time"] = $_request_time;
             $request_context ["request"] = $_request_parsed;
             $request_context ["arguments"] = $_request_arguments;
