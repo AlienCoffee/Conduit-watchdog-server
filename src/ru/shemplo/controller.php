@@ -34,11 +34,12 @@ class MainController {
 
         return new Verdict (false, "Wrong login or password");
     }
+
     public function handleLogout(
         $context,
         $paths      = ["/watchdog/user/logout"],
         $method     = "GET",
-        $authorized = false
+        $authorized =  true
     ){
         setcookie ("session", "", time () - 60 * 60 * 1, "/");
         header("Location: /");

@@ -84,7 +84,7 @@ function refreshScripts (scripts : Script []) {
 
         var name = document.createElement ("span");
         name.classList.add ("script-item-name");
-        name.innerHTML = script.name;
+        name.innerHTML = script.visible;// script.name
         line.appendChild (name);
 
         // Run button

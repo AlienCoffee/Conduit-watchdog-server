@@ -62,11 +62,18 @@ class WatchdogController {
 
         $filename = pathinfo ($file["name"], PATHINFO_FILENAME);
         $platform = ($extension == "cmd"? "windows": "linux");
-
+        // Обеспечить поиск скрипта по базе данных
         $id = rand(1,717);
-
-        $scripts[$platform][$id]['name']=$_POST["filename"];
-        $scripts[$platform][$id]['file']=$file ["name"];
+        // Есть ли скрипт в базе
+        $find = find_script($platform, $file["name"]);
+        if ($find === false){
+            $scripts[$platform][$id]['name'] = $_POST["filename"];
+            $scripts[$platform][$id]['file'] = $file ["name"];
+        } else{
+            // Записываем с найденным идентификатором
+            $id = $find["id"];
+            $scripts[$platform][$id]['name'] = $_POST["filename"];
+        }       
 
         file_put_contents("configs/scripts.json", json_encode($scripts));
 

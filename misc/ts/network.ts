@@ -109,6 +109,7 @@ export class Verdict {
 export class Script {
     public id        : string;
     public name      : string;
+    public visible   : string;
     public extension : string;
     public platform  : string;
     public created   : string;    
