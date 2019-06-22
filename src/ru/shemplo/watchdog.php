@@ -79,6 +79,7 @@ class WatchdogController {
 
         return new Verdict (true, "success");
     }
+    
     public function handleConsolePages (
         $context,
         $paths      = ["/watchdog/tasklist"],
