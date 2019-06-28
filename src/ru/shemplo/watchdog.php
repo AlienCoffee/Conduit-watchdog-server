@@ -66,13 +66,16 @@ class WatchdogController {
         $id = rand(1,717);
         // Есть ли скрипт в базе
         $find = find_script($platform, $file["name"]);
+
+        $data = json_decode ($context ["data"], true);
+
         if ($find === false){
-            $scripts[$platform][$id]['name'] = $_POST["filename"];
+            $scripts[$platform][$id]['name'] = $data["filename"];
             $scripts[$platform][$id]['file'] = $file ["name"];
         } else{
             // Записываем с найденным идентификатором
             $id = $find["id"];
-            $scripts[$platform][$id]['name'] = $_POST["filename"];
+            $scripts[$platform][$id]['name'] = $data["filename"];
         }       
 
         file_put_contents("configs/scripts.json", json_encode($scripts));
