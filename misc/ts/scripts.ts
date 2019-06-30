@@ -1,5 +1,5 @@
 import { element, clearChildren, dataElement, inputElement } from "./common";
-import { GetRequest, ScriptsBatch, Verdict, Script, PostRequestWithFiles } from "./network";
+import { GetRequest, ScriptsBatch, Verdict, Script, PostRequestWithFiles, PostRequest } from "./network";
 import { ErrorPopupTile, PopupTile } from "./popup";
 
 
@@ -105,7 +105,22 @@ function refreshScripts (scripts : Script []) {
 
         var buttonIcon = document.createElement ("img");
         buttonIcon.src = "/misc/img/icons/trash-bin.svg";
+    
         button.appendChild (buttonIcon);
+        button.onclick = (_ =>{
+            //alert("hello"+script.id);
+            var request = new PostRequest("/watchdog/scripts/delete", {id: script.id, platform: script.platform});
+            var popup = new PopupTile (10, "Deleting script", "Processing delete script on server");
+            popup.show ();
+
+            request.send ((response : Verdict) => {
+                if (!response.verdict) {
+                    popup.changeMessage (response.message)
+                        .switchToError ()
+                        .destructAfter (10);
+                } else { location.reload (); }
+            });
+        });
     });
 }
 

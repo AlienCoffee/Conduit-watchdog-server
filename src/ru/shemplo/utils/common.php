@@ -93,6 +93,7 @@
                 $visible = ($find ? $find['name']: pathinfo($dir, PATHINFO_FILENAME));
                 // Сохранять скрипт в базе данных корректно
                 array_push ($counters ["files"], Array (
+                    "id"        => $find["id"],
                     "name"      => pathinfo($dir, PATHINFO_FILENAME),
                     "visible"   => $visible,
                     "extension" => $extension,
@@ -129,12 +130,15 @@
         $data = json_decode ($content, true);
         // Вернуть идентификатор скрипта по имени
         $found_id = -1;
-        foreach($data [$platform] as $id => $script) {
-            if ($script['file'] == $filename){
-                $found_id = $id;
-                break;
+        if (isset($data[$platform])){
+            foreach($data [$platform] as $id => $script) {
+                if ($script['file'] == $filename){
+                    $found_id = $id;
+                    break;
+                }
             }
         }
+            
         if ($found_id != -1) {
 
             $script_path = SERVER_SCRIPTS.$data [$platform][$found_id]['file'];
@@ -148,4 +152,28 @@
         }
         return false;
     }
+
+    function find_script_by_id($platform, $script_id) {
+        $content = file_get_contents ("configs/scripts.json"); 
+        $data = json_decode ($content, true);
+        
+        return isset($data[$platform][$script_id]);       
+    }
+
+    function delete_script($platform, $script_id) {
+
+        $content = file_get_contents ("configs/scripts.json"); 
+        $data = json_decode ($content, true);
+        $script = $data[$platform][$script_id];
+
+        $filename = SERVER_SCRIPTS.$script["file"];
+
+        unset($data[$platform][$script_id]);
+
+        file_put_contents("configs/scripts.json", json_encode($data));
+        unlink($filename);
+
+        return true;
+    }
+
 ?>

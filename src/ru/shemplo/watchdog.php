@@ -82,7 +82,24 @@ class WatchdogController {
 
         return new Verdict (true, "success");
     }
-    
+
+    public function handleWatchdogScriptsDelete (
+        $context,
+        $paths      = ["/watchdog/scripts/delete"],
+        $method     = "POST",
+        $authorized = true
+    ) {
+        $data = json_decode($context["data"], true);
+        $script_id = $data["id"];
+        $platform = $data["platform"];
+        $find = find_script_by_id($platform, $script_id);
+        if (!$find){
+            return new Verdict (false, "Script not found");
+        }
+        delete_script($platform, $script_id);
+        return new Verdict (true, "success");
+    }
+
     public function handleConsolePages (
         $context,
         $paths      = ["/watchdog/tasklist"],

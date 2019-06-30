@@ -10,3 +10,5 @@ debug/
 
 *.js.map
 */ts/*.js
+
+src/ru/shemplo/scripts/*
