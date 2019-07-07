@@ -176,4 +176,19 @@
         return true;
     }
 
+    function read_script_by_id($platform, $script_id) {
+
+        $content = file_get_contents ("configs/scripts.json");
+        $data = json_decode ($content, true);
+        $script = $data[$platform][$script_id];
+
+        $filename = SERVER_SCRIPTS.$script["file"];
+
+        if (file_exists($filename)) {
+            return file_get_contents($filename);
+        }
+        
+        return false;
+    }
+
 ?>

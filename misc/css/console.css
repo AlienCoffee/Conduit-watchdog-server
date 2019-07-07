@@ -148,6 +148,7 @@ body {
 }
 
 .script-item-name {
+    cursor: pointer;
     display: inline-block;
     padding: 0 0 0 0.5em;
     width  : 70%;

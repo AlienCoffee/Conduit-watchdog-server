@@ -100,6 +100,24 @@ class WatchdogController {
         return new Verdict (true, "success");
     }
 
+    public function handleWatchdogScriptsSource (
+        $context,
+        $paths      = ["/watchdog/scripts/source"],
+        $method     = "POST",
+        $authorized = true
+    ) {
+        $data = json_decode($context["data"], true);
+        $script_id = $data["id"];
+        $platform = $data["platform"];
+
+        $txt = read_script_by_id($platform, $script_id);
+
+        if ($txt === false){
+            return new Verdict (false, "Script not found");
+        }
+        return new Verdict (true, $txt);
+    }
+
     public function handleConsolePages (
         $context,
         $paths      = ["/watchdog/tasklist"],

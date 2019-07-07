@@ -117,7 +117,15 @@
                 </div>
             </div>
             <div class="console-column">
+                <div class="console-column-tile column-tile-border" style="display:none">
+                    <h3 class="column-tile-header">
+                        Script source                        
+                    </h3>
 
+                    <div>
+                        <textarea id="source" class="form-textarea"></textarea>
+                    </div>
+                </div>                           
             </div>
         </div>
     </body>

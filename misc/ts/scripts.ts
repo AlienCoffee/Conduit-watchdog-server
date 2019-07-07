@@ -77,16 +77,37 @@ function refreshScripts (scripts : Script []) {
 
     scripts.forEach (script => {
         var line = document.createElement ("li");
-        //script.platform
+        
         line.classList.add (script.platform + "-script");
         line.classList.add ("console-list-item");
         list.appendChild (line);
 
         var name = document.createElement ("span");
+        
         name.classList.add ("script-item-name");
-        name.innerHTML = script.visible;// script.name
+       
+        name.innerHTML = script.visible;
         line.appendChild (name);
+        
+        name.onclick = (_ => {
+            
+            var source = <HTMLTextAreaElement>element("source");
+            var box = source.parentElement.parentElement;
 
+            var request = new PostRequest(
+                "/watchdog/scripts/source", 
+                {id: script.id, platform: script.platform}
+            ); 
+            request.send ((response : Verdict) => {
+                if (!response.verdict) {
+                    source.value = "";                       
+                } else {
+                    box.style.display = "block";
+                    source.value = response.message;                    
+                }
+            });
+            return false;
+        });
         // Run button
         var button = document.createElement ("button");
         button.id = [script.platform, script.name].join (";");
@@ -107,8 +128,7 @@ function refreshScripts (scripts : Script []) {
         buttonIcon.src = "/misc/img/icons/trash-bin.svg";
     
         button.appendChild (buttonIcon);
-        button.onclick = (_ =>{
-            //alert("hello"+script.id);
+        button.onclick = (_ =>{            
             var request = new PostRequest("/watchdog/scripts/delete", {id: script.id, platform: script.platform});
             var popup = new PopupTile (10, "Deleting script", "Processing delete script on server");
             popup.show ();
