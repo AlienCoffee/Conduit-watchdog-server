@@ -1,5 +1,5 @@
 <?php
-
+    
     require_once ("src/configs.php");
     require_once ("src/ru/shemplo/utils/common.php");
     require_once ("src/ru/shemplo/utils/front.php");
@@ -9,14 +9,16 @@
 
     $_request_arguments = Array ();
     $_request_data = file_get_contents ('php://input');
-    $_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://", 
-               $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
-    
-    // Parsed on components URL address
-    $_request_parsed = parse_url ($_request_url); 
+            
+    $_request_url = join ("", [$_SERVER ['REQUEST_SCHEME'], "://",
+        $_SERVER ['HTTP_HOST'], $_SERVER ['REQUEST_URI']]);
 
+    // Parsed on components URL address
+    $_request_parsed = parse_url ($_request_url);
+
+    $_query = (isset($_request_parsed ['query']) ? $_request_parsed ['query']: "");
     // Getting all arguments after ? sign in request string
-    parse_str ($_request_parsed ['query'], $_request_arguments);
+    parse_str ($_query, $_request_arguments);
 
     /*
     foreach ($_SERVER as $key => $value) {
@@ -24,7 +26,7 @@
         echo "<br />";
     }
     */
-    
+
     $_user = Array ("authorized" => false);
     $_client_access_token = "guest";
 
@@ -37,7 +39,7 @@
         if ($_user ["authorized"]) $_client_access_token = $token;
     }
 
-    setcookie ("session", $_client_access_token, 
+    setcookie ("session", $_client_access_token,
                time () + 60 * 60 * 1, "/"); // 1 hour
 
     require_once ("src/ru/shemplo/utils/handler.php");

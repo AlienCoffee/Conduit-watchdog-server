@@ -28,7 +28,7 @@
         return false;
     } 
 
-    function get_script_file ($platform, $script) {
+    function get_script_file ($platform, $script) {// Возможно стоит переписать
         $content = file_get_contents ("configs/scripts.json");
         $data = json_decode ($content, true);
         return SERVER_SCRIPTS.$data [$platform][$script];
@@ -84,16 +84,21 @@
             $dir = array_pop ($stack);
             
             if (!is_dir ($dir) && is_file ($dir)) {
-                $extension = get_file_extension ($dir);
+                $extension = pathinfo($dir, PATHINFO_EXTENSION);
+                // Найти в базе данных скриптов этот 
+                $platform = ($extension === "cmd" ? "windows"
+                    : ($extension === "sh" ? "linux" : "unknown"));
+
+                $find = find_script($platform, pathinfo($dir, PATHINFO_BASENAME));
+                $visible = ($find ? $find['name']: pathinfo($dir, PATHINFO_FILENAME));
+                // Сохранять скрипт в базе данных корректно
                 array_push ($counters ["files"], Array (
-                    "name"      => str_replace (".$extension", "", get_file_name ($dir)),
+                    "id"        => $find["id"],
+                    "name"      => pathinfo($dir, PATHINFO_FILENAME),
+                    "visible"   => $visible,
                     "extension" => $extension,
                     "path"      => $dir,
-                    "platform"  => $extension === "cmd"
-                                 ? "windows"
-                                 : ($extension === "sh"
-                                 ? "linux"
-                                 : "unknown"),
+                    "platform"  => $platform,
                     "created"  => filectime ($dir)
                 ));
                 continue;
@@ -112,6 +117,78 @@
         }
 
         return $counters;
+    }
+
+    function get_scripts(){// Переписать
+        $content = file_get_contents ("configs/scripts.json");
+        $data = json_decode ($content, true);
+        return SERVER_SCRIPTS.$data [$platform][$script];
+    }
+
+    function find_script($platform, $filename) {
+        $content = file_get_contents ("configs/scripts.json"); 
+        $data = json_decode ($content, true);
+        // Вернуть идентификатор скрипта по имени
+        $found_id = -1;
+        if (isset($data[$platform])){
+            foreach($data [$platform] as $id => $script) {
+                if ($script['file'] == $filename){
+                    $found_id = $id;
+                    break;
+                }
+            }
+        }
+            
+        if ($found_id != -1) {
+
+            $script_path = SERVER_SCRIPTS.$data [$platform][$found_id]['file'];
+
+            if (file_exists($script_path)){
+                return Array(
+                    "id"=> $found_id, 
+                    "name"=>$data [$platform][$found_id]['name']
+                );
+            }
+        }
+        return false;
+    }
+
+    function find_script_by_id($platform, $script_id) {
+        $content = file_get_contents ("configs/scripts.json"); 
+        $data = json_decode ($content, true);
+        
+        return isset($data[$platform][$script_id]);       
+    }
+
+    function delete_script($platform, $script_id) {
+
+        $content = file_get_contents ("configs/scripts.json"); 
+        $data = json_decode ($content, true);
+        $script = $data[$platform][$script_id];
+
+        $filename = SERVER_SCRIPTS.$script["file"];
+
+        unset($data[$platform][$script_id]);
+
+        file_put_contents("configs/scripts.json", json_encode($data));
+        unlink($filename);
+
+        return true;
+    }
+
+    function read_script_by_id($platform, $script_id) {
+
+        $content = file_get_contents ("configs/scripts.json");
+        $data = json_decode ($content, true);
+        $script = $data[$platform][$script_id];
+
+        $filename = SERVER_SCRIPTS.$script["file"];
+
+        if (file_exists($filename)) {
+            return file_get_contents($filename);
+        }
+        
+        return false;
     }
 
 ?>

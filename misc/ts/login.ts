@@ -18,7 +18,6 @@ export function attemptLogin () {
                 .show ();
     }
 }
-
 export function onResponse (response : Verdict) {
     if (!response.verdict) { 
         new ErrorPopupTile ("Authentification failed", 

@@ -31,9 +31,19 @@
             if ($request_context ["authorized"] && !$_user ["authorized"]) {
                 continue; // This handler is avalilable for logged in user
             }
+            // Надо запихнуть в json $_POST
+            $json1 = json_decode($_request_data, true);
+            if (is_array($json1)){
+                $json2 = array_merge($json1, $_POST);
+            }else{
+                $json2 = $_POST; // Так же можно запихнуть и $_GET Массив или $_REQUEST
+            }
+            
+            // а теперь обратно
+            $json3 = json_encode($json2);
 
-            $request_context ["user"] = $_user;
-            $request_context ["data"] = $_request_data;
+            $request_context ["user"] = $_user;                                        
+            $request_context ["data"] = $json3;                           
             $request_context ["time"] = $_request_time;
             $request_context ["request"] = $_request_parsed;
             $request_context ["arguments"] = $_request_arguments;
